@@ -15,8 +15,8 @@
   24 participants, [more info here][4] , will update the details after reading the paper  
   
 - [Internal attention study][5]  
-..EEG data of participants, there is a relax period of 9 seconds in between tasks, I don't know if this could be useful, I don't think so  
-..20 subjects, [more info here][6], will search for details if this dataset proves interesting  
+  EEG data of participants, there is a relax period of 9 seconds in between tasks, I don't know if this could be useful, I don't think so  
+  20 subjects, [more info here][6], will search for details if this dataset proves interesting  
   
 - [DataSet1][7]  
   the description says no available tasks so maybe this is resting state data??  
