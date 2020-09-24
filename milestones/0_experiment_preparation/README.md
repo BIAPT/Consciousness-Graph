@@ -26,6 +26,18 @@
   fMri and EEG data of healthy patients in a resting state, fMRI not needed  
   52 patients, 22 males, 18-44 yo, right-handed, no neurological or psychiatric disorder history  
   **after review, only the fMRI seems to be resting state data so this data would be inappropriate.**  
+  
+### Second scan through the whole database, showing all the dataset that eluded the first one
+#### Ordered from most interesting to least interesting in my (Raphael Christin) opinion
+
+- [Single-pulse open-loop TMS-EEG dataset][9]  
+  20 subjects, includes rest eeg, not much more information but seems to be the most promising dataset  
+
+- [CRYPTO and PROVIDE EEG Baseline Data][10]
+  226 subjects, baseline eeg data but it's on young infants, so it doesn't seem that relevant 
+
+- [PROBE iEEG][11]
+  raw iEEG data, 6 subjects, says no available tasks so maybe rest, without more information doesn't seem that interesting  
 
 ###### Links
 [1]: https://openneuro.org/datasets/ds001849/versions/1.0.2
@@ -36,3 +48,6 @@
 [6]: https://www.semanticscholar.org/paper/Psychophysical-interactions-with-a-single-photon-Radin-Michel/8095890b463b7d373054b9da40a04356cc63bcf2
 [7]: https://openneuro.org/datasets/ds002791/versions/1.0.0
 [8]: https://openneuro.org/datasets/ds001408/versions/1.0.3
+[9]: https://openneuro.org/datasets/ds002094/versions/1.0.0
+[10]: https://openneuro.org/datasets/ds002181/versions/1.0.0
+[11]: https://openneuro.org/datasets/ds003078/versions/1.0.0
