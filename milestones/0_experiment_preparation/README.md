@@ -1,4 +1,4 @@
-# File to track the interesting datasets from https://openneuro.org/ that could be relevent to this experiment.
+# File to track the interesting datasets from https://openneuro.org/ that could be relevant to this experiment.
 ## Searching for Datasets containing eeg data of healthy patient in a resting state.
 
 
