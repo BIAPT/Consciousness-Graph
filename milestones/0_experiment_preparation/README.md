@@ -6,23 +6,23 @@
 ### Initial scan with keyword "eeg" in the searchbox, I don't know if some datasets with eeg data could evade this search, the search feature is not very developed
 #### Ordered from most interesting to least interesting in my (Raphael Christin) opinion
 
-- [RS_TMSEEG_Data] [1]
+- [RS_TMSEEG_Data][1]
 ..Based on the title of the dataset, seems to be resting state EEG data
-..[more info here] [2] , will update the details after reading the paper
+..[more info here][2] , will update the details after reading the paper
 
-- [EEG meditation study] [3]
+- [EEG meditation study][3]
 ..EEG data of healthy participants meditating, not exactly a resting state dataset.
-..24 participants, [more info here] [4] , will update the details after reading the paper
+..24 participants, [more info here][4] , will update the details after reading the paper
   
-- [Internal attention study] [5]
+- [Internal attention study][5]
 ..EEG data of participants, there is a relax period of 9 seconds in between tasks, I don't know if this could be useful, I don't think so
-..20 subjects, [more info here] [6], will search for details if this dataset proves interesting
+..20 subjects, [more info here][6], will search for details if this dataset proves interesting
   
-- [DataSet1] [7]
+- [DataSet1][7]
 ..the description says no available tasks so maybe this is resting state data??
 ..23 subjects , in the absemce of more information this doesn't seem like the most promising dataset
 
-- [rsfMRI before and after one session EEG NF vs Sham NF] 
+- [rsfMRI before and after one session EEG NF vs Sham NF][8]
 ..fMri and EEG data of healthy patients in a resting state, fMRI not needed
 ..52 patients, 22 males, 18-44 yo, right-handed, no neurological or psychiatric disorder history
 ..**after review, only the fMRI seems to be resting state data so this data would be inappropriate.**
