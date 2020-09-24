@@ -1,4 +1,4 @@
-# File to track the interesting datasets from https://openneuro.org/ that could be rele vant to this experiment.
+# File to track the interesting datasets from https://openneuro.org/ that could be relevent to this experiment.
 ## Searching for Datasets containing eeg data of healthy patient in a resting state.
 
 
@@ -33,10 +33,10 @@
 - [Single-pulse open-loop TMS-EEG dataset][9]  
   20 subjects, includes rest eeg, not much more information but seems to be the most promising dataset  
 
-- [CRYPTO and PROVIDE EEG Baseline Data][10]
+- [CRYPTO and PROVIDE EEG Baseline Data][10]  
   226 subjects, baseline eeg data but it's on young infants, so it doesn't seem that relevant 
 
-- [PROBE iEEG][11]
+- [PROBE iEEG][11]  
   raw iEEG data, 6 subjects, says no available tasks so maybe rest, without more information doesn't seem that interesting  
 
 ###### Links
