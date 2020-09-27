@@ -39,6 +39,9 @@
 - [PROBE iEEG][11]  
   raw iEEG data, 6 subjects, says no available tasks so maybe rest, without more information doesn't seem that interesting  
 
+### Conclusion
+In my opinion, [this dataset][9] is the most promising. It includes resting state eeg data from 20 subjects. However, the OpenNeuro page does not share much information about the subjects, which could be problematic. Another option would be [this dataset][1]. It again contains eeg data from 20 subjects, but it doesn't state explicitely state that it is resting state data, I am only inferring that from the title of the dataset. [This paper][2] is linked, but I did not find any clarifications. If data from subjects who are meditating could be appropriate, [this dataset][3] could be a good fit as well. It contains eeg data fro 24 subjects who are meditating.
+
 ###### Links
 [1]: https://openneuro.org/datasets/ds001849/versions/1.0.2
 [2]: https://pubmed.ncbi.nlm.nih.gov/31929531/
