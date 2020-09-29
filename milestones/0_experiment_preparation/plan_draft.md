@@ -23,10 +23,13 @@ Each of these graphs can go through the following transformation:
 
 ## Phase 1 of the project:
 Describe statistically the difference in the following feature for the graphs studied:
+- local global efficiency
 - global efficiency
 - clustering coefficient
 - modularity
 - small worldness
+- average global connectivity 
+- standard deviation of global connectivity
 
 over the following epochs:
 - Baseline
@@ -45,7 +48,10 @@ To start we will only look at **one** graph with **one** transformation:
 
 Once the pipeline will be working well for this one graph this is when we can do the permutation between the different graphs and the transformation to search the space for the optimal graph of awareness.
 
-## Phase 2
+## Phase 2 of the project:
+Train a cross validated machine learning model on the features of phase 1 to compare each epochs.
+The type of classifier studied will be linear in order to understand the decision boundary (i.e. the weights/importance placed onto each features) and the type of cross-validation used will be a leave-one-subject-out in order to avoid data-leakage. 
+This part could be an extra part of your project and not directly stated in your abstract.
 
 
 ## Significance
