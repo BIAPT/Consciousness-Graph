@@ -15,14 +15,37 @@ To do so we will use anesthesia as a perturbator to disrupt awareness in healthy
 - Directed Phase Lag Index
 
 Each of these graphs can go through the following transformation:
-- No transformation
+- identiy (No transformation)
 - Keep the top X% of connection
 - Keep the lower X% of connection
 - Minimal Spanning Graph of top connections
 - Orthogonal Minimum Spanning Tree thresholding
 
-## Phase 1:
-Describe statistically the difference in 
+## Phase 1 of the project:
+Describe statistically the difference in the following feature for the graphs studied:
+- global efficiency
+- clustering coefficient
+- modularity
+- small worldness
+
+over the following epochs:
+- Baseline
+- Induction of the anesthetic protocol
+- Unconsciouss
+- -30 minutes before recovery of consciousness
+- -10 minutes before recovery of consciousness
+- -5 minutes before recovery of consciousness
+- +30 minutes after recovery of consciousness
+- +30 minutes after recovery of consciousness
+
+see the [preprint titled Brain network motifs are markers of loss and recovery of consciousness](https://www.biorxiv.org/content/10.1101/2020.03.16.993659v1.full) for more information on both the participants and the calculation of these features.
+
+To start we will only look at **one** graph with **one** transformation:
+- dpli with the identity transformation (no transformation)
+
+Once the pipeline will be working well for this one graph this is when we can do the permutation between the different graphs and the transformation to search the space for the optimal graph of awareness.
+
+## Phase 2
 
 
 ## Significance
