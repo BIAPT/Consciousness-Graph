@@ -18,8 +18,7 @@ clear;
 setup_projects %create appropriate paths
 setup_experiments % see this file to edit the experiments
 
-NUM_CORE = 40;%number of cores, maybe change later
-
+NUM_CORE = 80;
 % Create the (w/d)pli directory
 wpli_output_path = mkdir_if_not_exist(output_path,'wpli');
 dpli_output_path = mkdir_if_not_exist(output_path,'dpli');
@@ -34,10 +33,9 @@ local_cluster = parccluster('local')
 %modify the JobStorageLocation to $SLURM_TMPDIR
 pc.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
 %start the parallel pool
-parpool(local_cluster, NUM_CORE)
-
+parpool(local_cluster, NUM_CORE
 % Iterate over the participants
-parfor p = 1:length(participants)
+for p = 1:length(participants)
     
     participant = participants{p};
     disp(strcat("Participant : ",participant));
