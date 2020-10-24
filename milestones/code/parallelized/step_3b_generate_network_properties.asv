@@ -83,7 +83,7 @@ parfor p = 1:length(participants)
             
             % Calculate the null network parameters
             random_networks = zeros(graph_param.number_surrogate,length(wpli_matrix),length(wpli_matrix));
-            for r = 1:graph_param.number_surrogate
+            parfor r = 1:graph_param.number_surrogate
                 disp(strcat("Random network #",string(r)));
                 [random_networks(r,:,:),~] = randmio_und(b_network,10);    % generate random matrix
             end
@@ -121,7 +121,7 @@ parfor p = 1:length(participants)
         result_graph.channels_location = channels_location;
         result_graph.wpli_matrix = wpli_matrix;
         result_graph.binary_matrix = b_network;
-        parsave(graph_session_filename, 'result_graph');
+        save(graph_session_filename, 'result_graph');
         
         %plot change over states (within session)
         if graph_param.figure
@@ -165,7 +165,4 @@ parfor p = 1:length(participants)
     end
 end
 
-function parsave(filename, name)
-    %to save inside parfor loop
-    save(filename, name);
-end
+function parsave(filename, 

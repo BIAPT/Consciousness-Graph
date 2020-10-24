@@ -18,8 +18,6 @@ clear;
 setup_projects %create appropriate paths
 setup_experiments % see this file to edit the experiments
 
-NUM_CORE = 40;%number of cores, maybe change later
-
 % Create the (w/d)pli directory
 wpli_output_path = mkdir_if_not_exist(output_path,'wpli');
 dpli_output_path = mkdir_if_not_exist(output_path,'dpli');
@@ -28,6 +26,8 @@ dpli_output_path = mkdir_if_not_exist(output_path,'dpli');
 %setup for parallelization
 %code from Yacine mahdid's youtube channel
 %introduction to high performance computing for machine learning
+
+NUM_CORE = 40;%number of cores, maybe change later
 
 %Create a local cluster objects
 local_cluster = parccluster('local')
