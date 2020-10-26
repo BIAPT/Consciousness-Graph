@@ -23,7 +23,7 @@ wpli_input_path = strcat(output_path,filesep,'wpli');
 NUM_CORE = 9;%number of cores, maybe change later
 
 %Create a local cluster objects
-local_cluster = parccluster('local')
+local_cluster = parcluster('local')
 %modify the JobStorageLocation to $SLURM_TMPDIR
 local_cluster.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
 %start the parallel pool
