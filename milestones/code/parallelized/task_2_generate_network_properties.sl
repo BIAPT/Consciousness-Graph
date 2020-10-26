@@ -10,7 +10,7 @@
 #SBATCH --mail-type=ALL
 
 # load modules (choose matlab version)
-module load matlab/R2020a  # maybe 2020a?
+module load matlab/2020a  # maybe 2020a?
 
 # create temporary job info location
 mkdir -p /scratch/$USER/$SLURM_JOB_ID
