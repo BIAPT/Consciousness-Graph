@@ -27,12 +27,12 @@ dpli_output_path = mkdir_if_not_exist(output_path,'dpli');
 %code from Yacine mahdid's youtube channel
 %introduction to high performance computing for machine learning
 
-NUM_CORE = 40;%number of cores, maybe change later
+NUM_CORE = 9;%number of cores, maybe change later
 
 %Create a local cluster objects
 local_cluster = parccluster('local')
 %modify the JobStorageLocation to $SLURM_TMPDIR
-pc.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
+local_cluster.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
 %start the parallel pool
 parpool(local_cluster, NUM_CORE)
 
