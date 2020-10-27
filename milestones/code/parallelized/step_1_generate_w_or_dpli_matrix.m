@@ -15,7 +15,7 @@
 
 %% Seting up the variables
 clear;
-setup_projects %create appropriate paths
+setup_project %create appropriate paths
 setup_experiments % see this file to edit the experiments
 
 % Create the (w/d)pli directory
