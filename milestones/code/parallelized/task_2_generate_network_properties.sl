@@ -16,7 +16,7 @@ module load matlab/2020a  # maybe 2020a?
 mkdir -p /scratch/$USER/$SLURM_JOB_ID
 
 # run
-srun matlab -nodisplay -r "step_3b_network_properties" # will run on at most 40 cores
+srun matlab -nodisplay -r "step_3b_generate_network_properties" # will run on at most 40 cores
 
 # cleanup
 rm -rf /scratch/$USER/$SLURM_JOB_ID
