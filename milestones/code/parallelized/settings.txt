@@ -1,2 +1,2 @@
-raw_data_path=~/projects/def-sblain/raphchr/DATA/'Resting state analysis'
+raw_data_path=~/projects/def-sblain/raphchr/DATA/Resting state analysis
 output_path=~/projects/def-sblain/raphchr/analysis/gtpaper/first
