@@ -172,5 +172,5 @@ end
 
 function parsave(filename, name)
     %function to save in the parallel loop
-    save(filename, name);
+    save(filename, 'name');
 end

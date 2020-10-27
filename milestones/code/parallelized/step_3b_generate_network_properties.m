@@ -167,5 +167,5 @@ end
 
 function parsave(filename, name)
     %to save inside parfor loop
-    save(filename, name);
+    save(filename, 'name');
 end
