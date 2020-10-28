@@ -33,19 +33,19 @@ position =  [90+(Pixelsize*F/2) 610;...
     130+Pixelsize*F+Pixelsize*T+Pixelsize*C+Pixelsize*P+((Pixelsize*O)/2) 610];
 
 RGB = insertText(i1,position(1,:),'F','FontSize',30,...
-    'TextColor',[255 128 0],'BoxOpacity',0,'Font','Arial Bold');
+    'TextColor',[255 128 0],'BoxOpacity',0,'Font','LucidaBrightRegular');
 
 RGB = insertText(RGB,position(2,:),'T','FontSize',30,...
-    'TextColor',[160 160 160],'BoxOpacity',0,'Font','Arial Bold');
+    'TextColor',[160 160 160],'BoxOpacity',0,'Font','LucidaBrightRegular');
 
 RGB = insertText(RGB,position(3,:),'C','FontSize',30,...
-    'TextColor',[0 122 204],'BoxOpacity',0,'Font','Arial Bold');
+    'TextColor',[0 122 204],'BoxOpacity',0,'Font','LucidaBrightRegular');
 
 RGB = insertText(RGB,position(4,:),'P','FontSize',30,...
-    'TextColor',[255 201 51],'BoxOpacity',0,'Font','Arial Bold');
+    'TextColor',[255 201 51],'BoxOpacity',0,'Font','LucidaBrightRegular');
 
 RGB = insertText(RGB,position(5,:),'O','FontSize',30,...
-    'TextColor',[76 153 0],'BoxOpacity',0,'Font','Arial Bold');
+    'TextColor',[76 153 0],'BoxOpacity',0,'Font','LucidaBrightRegular');
 
 hold on 
 
