@@ -1,10 +1,10 @@
 #!/bin/bash -l
 #SBATCH --job-name=generate-plis # give a name to the job
 #SBATCH --account=def-sblain # adjust to match the accounting group
-#SBATCH --time=2-00:00:00 # adjust to match the time required for the job, (D-HH:MM:SS) be as accurate ap
+#SBATCH --time=4-00:00:00 # adjust to match the time required for the job, (D-HH:MM:SS) be as accurate ap
 #SBATCH --nodes=1 # adjust to the number of nodes
 #SBATCH --ntasks=1 # number of tasks
-#SBATCH --cpus-per-task=9 # adjust if parallel commands
+#SBATCH --cpus-per-task=40 # adjust if parallel commands
 #SBATCH --mem=9000 # adjust to memory required per node in MegaBytes
 #SBATCH --mail-user=raphael.christin@mail.mcgill.ca
 #SBATCH --mail-type=ALL

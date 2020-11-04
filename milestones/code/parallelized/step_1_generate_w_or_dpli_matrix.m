@@ -27,7 +27,7 @@ dpli_output_path = mkdir_if_not_exist(output_path,'dpli');
 %code from Yacine mahdid's youtube channel
 %introduction to high performance computing for machine learning
 
-NUM_CORE = 9;%number of cores, maybe change later
+NUM_CORE = 40;%number of cores, maybe change later
 
 %Create a local cluster objects
 local_cluster = parcluster('local')
@@ -37,7 +37,7 @@ pc.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
 parpool(local_cluster, NUM_CORE)
 
 % Iterate over the participants
-parfor p = 1:length(participants)
+for p = 1:length(participants)
     
     participant = participants{p};
     disp(strcat("Participant : ",participant));
@@ -51,7 +51,7 @@ parfor p = 1:length(participants)
         dpli_participant_output_path = mkdir_if_not_exist(dpli_output_path,strcat(participant,filesep,session));
         
         % Iterate over the states
-        for s = 1:length(states)
+        parfor s = 1:length(states)
             state = states{s};
 
             % Load the recording

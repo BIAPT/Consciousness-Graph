@@ -30,7 +30,7 @@ pc.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
 parpool(local_cluster, NUM_CORE)
 
 % Iterate over the participants
-parfor p = 1:length(participants)
+for p = 1:length(participants)
     
     % Create the participants directory
     participant = participants{p};
