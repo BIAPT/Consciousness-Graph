@@ -9,7 +9,7 @@ settings = load_settings();
 raw_data_path = settings.raw_data_path;
 output_path = settings.output_path;
 
-participants = {'MDFA03', 'MDFA05', 'MDFA06', 'MDFA07', 'MDFA10', 'MDFA11', 'MDFA12', 'MDFA15', 'MDFA17'};
+%participants = {'MDFA03', 'MDFA05', 'MDFA06', 'MDFA07', 'MDFA10', 'MDFA11', 'MDFA12', 'MDFA15', 'MDFA17'};
 sessions = {'T1'};
 states = {'baseline', 'induction_first_5', 'emergence_first_5', 'emergence_last_5', '30_post_recovery', '60_post_recovery', '90_post_recovery', '120_post_recovery', '150_post_recovery', '180_post_recovery'};
 %
