@@ -20,7 +20,7 @@
 %}
 
 %% Seting up the variables
-clear;
+%clear;
 setup_project %create appropriate paths
 setup_experiments % see this file to edit the experiments
 
