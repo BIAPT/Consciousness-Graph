@@ -2,7 +2,7 @@ import mne
 from mne.connectivity import spectral_connectivity
 import matplotlib
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 import pandas
 
 class Patient:
@@ -40,7 +40,7 @@ class Patient:
             #set channel order and regions
             channels = pandas.read_csv(channel_order_path)
             channel_order = channels['label'].to_list()
-            channel_region = channnels['region'].to_list()
+            channel_region = channels['region'].to_list()
 
             for session in self.sessions:
                 #iterate through sesions
@@ -49,7 +49,7 @@ class Patient:
                     #load the data
                     file_path = self.input_path + '/' + session + '/' + state + self.file_format
                     if self.file_format == '.set': raw_data = mne.io.read_raw_eeglab(file_path, preload = False, uint16_codec = 'utf-8').reorder_channels(channel_order)
-                    elif self.file_format == '.edf': raw_data = mne.io.read_raw_edf(file_path, preload = False, uint16_codec = 'utf-8').reorder_channels(channel_order)
+                    elif self.file_format == '.edf': raw_data = mne.io.read_raw_edf(file_path, preload = False).reorder_channels(channel_order)
                     events = mne.find_events(raw_data, shortest_event = 1)
                     epochs = mne.Epochs(raw_data, events)
                     sfreq = raw_data['sfreq']
@@ -57,7 +57,7 @@ class Patient:
                     #compute the matrix
                     wpli, freqs, times, n_epochs, n_tapers = spectral_connectivity(epochs, method='wpli', mode='multitaper', sfreq = sfreq, fmin=fmin, fmax=fmax)
                     #save the matrix
-                    wpli_df = pandads.DataFrame(wpli)
+                    wpli_df = pandas.DataFrame(wpli)
                     #create indexes
                     ind = pandas.Index(channel_region)
                     wpli_df.set_axis(ind, axis = 0)
@@ -107,7 +107,7 @@ class Patient:
                     # Rotate the tick labels and set their alignment.
                     plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
                     #set title
-                    ax.set_title("wpli matrix of " + self.name + ", session " + session + ", "  + state ', ' + fmin + '-' + fmax + ' Hz')
+                    ax.set_title("wpli matrix of " + self.name + ", session " + session + ", "  + state + ', ' + fmin + '-' + fmax + ' Hz')
                     #plot and save
                     fig.tight_layout()
                     plt.savefig(self.output_path + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.png')

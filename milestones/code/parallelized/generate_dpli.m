@@ -20,25 +20,25 @@
 %}
 
 %% Seting up the variables
-clear;
+%clear;
 setup_project %create appropriate paths
 setup_experiments % see this file to edit the experiments
 
 % Create the wpli directory
-wpli_output_path = mkdir_if_not_exist(output_path,'wpli');
+dpli_output_path = mkdir_if_not_exist(output_path,'dpli');
 
 %setup for parallelization
 %code from Yacine mahdid's youtube channel
 %introduction to high performance computing for machine learning
 
-NUM_CORE = 10;%number of cores, maybe change later
+%NUM_CORE = 10;%number of cores, maybe change later
 
 %Create a local cluster objects
-local_cluster = parcluster('local')
+%local_cluster = parcluster('local')
 %modify the JobStorageLocation to $SLURM_TMPDIR
-pc.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
+%pc.JobStorageLocation = strcat('/scratch/raphchr/', getenv('SLURM_JOB_ID'))
 %start the parallel pool
-parpool(local_cluster, NUM_CORE)
+%parpool(local_cluster, NUM_CORE)
 
 %display participant, must be set through slurm file
 disp(strcat("Participant : ",participant));
@@ -89,7 +89,7 @@ for t = 1:length(sessions)
             plot_pli(right_matrix,r_regions(right_ind),right_matrix(:),'*RdYlBu');
             title(strcat( participant," ",session," ",state," ",eyes," Right Hemisphere dPLI"))
             colorbar
-            imagepath = strcat(dpli_participant_output_path,filesep,state,'_left_dpli.fig');
+            imagepath = strcat(dpli_participant_output_path,filesep,state,'_right_dpli.fig');
             saveas(gcf,imagepath);
             imagepath = strcat(dpli_participant_output_path,filesep,state,'_right_dpli.png');
             saveas(gcf,imagepath);
