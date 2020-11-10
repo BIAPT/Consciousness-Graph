@@ -64,7 +64,7 @@ for t = 1:length(sessions)
         result_dpli = na_dpli(recording, dpli_param.frequency_band, ...
                               dpli_param.window_size, dpli_param.step_size, ...
                               dpli_param.number_surrogate, dpli_param.p_value);
-        parsave(dpli_state_filename, 'result_dpli');
+        parsave(dpli_state_filename, result_dpli);
             
         %sort matrix by region
         [r_dpli, r_labels, r_regions, r_location] = reorder_channels(result_dpli.data.avg_dpli, result_dpli.metadata.channels_location,'biapt_egi129.csv');

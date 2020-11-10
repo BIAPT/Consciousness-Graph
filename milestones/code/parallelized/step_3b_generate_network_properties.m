@@ -60,9 +60,9 @@ parfor p = 1:length(participants)
             disp(strcat("State :", state));
             
             % Load the wpli result
-            %data = load(strcat(wpli_participant_input_path,filesep,state,'_wpli.mat'));
-            %result_wpli = data.result_wpli;
-            result_wpli = load(strcat(wpli_participant_input_path,filesep,state,'_wpli.mat'));
+            data = load(strcat(wpli_participant_input_path,filesep,state,'_wpli.mat'));
+            result_wpli = data.result_wpli;
+            %result_wpli = load(strcat(wpli_participant_input_path,filesep,state,'_wpli.mat'));
             wpli_matrix  = result_wpli.data.avg_wpli;
             channels_location = result_wpli.metadata.channels_location;
             
