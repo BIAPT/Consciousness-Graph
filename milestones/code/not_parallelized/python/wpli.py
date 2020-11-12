@@ -22,8 +22,8 @@ class Patient:
     def __init__(self, name, input_path, output_path, sessions, states, file_format):
         #set up the patient data
         self.name = name
-        self.input_path = input_path + '/' + name
-        self.output_path = output_path + '/' + name
+        self.input_path = input_path
+        self.output_path = output_path
         self.sessions = sessions
         self.states = states
         self.file_format = file_format
@@ -34,20 +34,24 @@ class Patient:
         self.aec_freqs = []
         self.aec_plot_freqs = []
 
-    def calculate_wpli(self, fmin, fmax, channel_order_path):
+    def calculate_wpli(self, fmin, fmax, channel_order_path, windows = True):
         #calculate wpli if not already done
         if [fmin, fmax] not in self.wpli_freqs:
             #set channel order and regions
             channels = pandas.read_csv(channel_order_path)
             channel_order = channels['label'].to_list()
-            channel_region = channels['region'].to_list()
+            channel_region = channels[' region'].to_list()
 
             for session in self.sessions:
                 #iterate through sesions
                 for state in self.states:
                     #iterate through states
                     #load the data
-                    file_path = self.input_path + '/' + session + '/' + state + self.file_format
+                    if windows : file_path = self.input_path + '\\' + session + '\\' + self.name + "_" + session + "_" + \
+                        state + "_EC" + self.file_format
+                    else:
+                        file_path = self.input_path + '/' + session + '/' + self.name + \
+                            "_" + session + "_" + state + "_EC" + self.file_format
                     if self.file_format == '.set': raw_data = mne.io.read_raw_eeglab(file_path, preload = False, uint16_codec = 'utf-8').reorder_channels(channel_order)
                     elif self.file_format == '.edf': raw_data = mne.io.read_raw_edf(file_path, preload = False).reorder_channels(channel_order)
                     events = mne.find_events(raw_data, shortest_event = 1)
@@ -63,7 +67,11 @@ class Patient:
                     wpli_df.set_axis(ind, axis = 0)
                     wpli_df.set_axis(ind, axis = 1)
                     #save dataframe
-                    wpli_df.to_csv(self.output_path + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+                    if windows : 
+                        wpli_df.to_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + fmin + '-' + fmax + '.csv')
+                    else:
+                        wpli_df.to_csv(self.output_path + '/' + self.name + '/'+ session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+                    
 
             # update wpli freqs list
             self.wpli_freqs.append([fmin, fmax])
@@ -71,14 +79,16 @@ class Patient:
         else :
             return True
 
-    def get_wpli(self, fmin, fmax, session, state):
+    def get_wpli(self, fmin, fmax, session, state, windows = True):
         #return wpli matrix as pandas DataFrame
         if [fmin, fmax] in self.wpli_freqs:
-            return pandas.read_csv(self.output_path + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+            if windows : 
+                return pandas.read_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + fmin + '-' + fmax + '.csv')
+            return pandas.read_csv(self.output_path + '/' + self.name + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
         else :
             return None
 
-    def plot_wpli(self):
+    def plot_wpli(self, windows = True):
         #plot all the available wpli matrices
         for session in self.sessions:
             #iterate through sesions
@@ -86,7 +96,12 @@ class Patient:
                 #iterate through states
                 for [fmin, fmax] in self.wpli_freqs :
                     #load the data
-                    wpli_df = pandas.read_csv(self.output_path + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+                    if windows : 
+                        wpli_df = pandas.read_csv(self.output_path + '\\' + session + '\\' + state + '_' + fmin + '-' + fmax + '.csv')
+                    
+                    else :
+                        wpli_df = pandas.read_csv(self.output_path + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+                    
                     regions = wpli_df.index.to_list()
                     matrix = wpli_df.as_matrix()
                     #create plot
