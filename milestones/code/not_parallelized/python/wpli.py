@@ -34,43 +34,62 @@ class Patient:
         self.aec_freqs = []
         self.aec_plot_freqs = []
 
-    def calculate_wpli(self, fmin, fmax, channel_order_path, windows = True):
+    def calculate_wpli(self, fmin, fmax, channel_order_path, windows = True):#does not work, produces a triangular matrix
         #calculate wpli if not already done
         if [fmin, fmax] not in self.wpli_freqs:
             #set channel order and regions
-            channels = pandas.read_csv(channel_order_path)
+            channels = pandas.read_csv(channel_order_path, sep=r'\s*,\s*')
             channel_order = channels['label'].to_list()
-            channel_region = channels[' region'].to_list()
 
             for session in self.sessions:
                 #iterate through sesions
                 for state in self.states:
                     #iterate through states
-                    #load the data
+                    #set correct path
                     if windows : file_path = self.input_path + '\\' + session + '\\' + self.name + "_" + session + "_" + \
                         state + "_EC" + self.file_format
                     else:
                         file_path = self.input_path + '/' + session + '/' + self.name + \
                             "_" + session + "_" + state + "_EC" + self.file_format
-                    if self.file_format == '.set': raw_data = mne.io.read_raw_eeglab(file_path, preload = False, uint16_codec = 'utf-8').reorder_channels(channel_order)
-                    elif self.file_format == '.edf': raw_data = mne.io.read_raw_edf(file_path, preload = False).reorder_channels(channel_order)
-                    events = mne.find_events(raw_data, shortest_event = 1)
+
+                    #load the data
+                    if self.file_format == '.set': raw_data = mne.io.read_raw_eeglab(file_path, preload = False, uint16_codec = 'utf-8')
+                    elif self.file_format == '.edf': raw_data = mne.io.read_raw_edf(file_path, preload = False)
+                    
+                    # drop unnecessary channels
+
+                    for i in channel_order:
+                        if i not in raw_data.ch_names:
+                            channels = channels[channels.label != i]
+
+                    #reload channel order and region
+                    channel_order = channels['label'].to_list()
+                    channel_region = channels['region'].to_list()
+
+                    #reorder channels 
+
+                    raw_data = raw_data.reorder_channels(channel_order)
+
+                    #setup for wpli
+                    #events = mne.find_events(raw_data, stim_channel = 'Cz')
+                    events, event_ids = mne.events_from_annotations(raw_data)
                     epochs = mne.Epochs(raw_data, events)
-                    sfreq = raw_data['sfreq']
+                    sfreq = raw_data.info['sfreq']
                     epochs.load_data()
                     #compute the matrix
-                    wpli, freqs, times, n_epochs, n_tapers = spectral_connectivity(epochs, method='wpli', mode='multitaper', sfreq = sfreq, fmin=fmin, fmax=fmax)
+                    wpli, freqs, times, n_epochs, n_tapers = spectral_connectivity(epochs, method='wpli', mode='fourier', sfreq = sfreq, fmin=fmin, fmax=fmax)
                     #save the matrix
-                    wpli_df = pandas.DataFrame(wpli)
+                    wpli_avg = avg_mats(wpli)
+                    wpli_df = pandas.DataFrame(wpli_avg)
                     #create indexes
                     ind = pandas.Index(channel_region)
-                    wpli_df.set_axis(ind, axis = 0)
-                    wpli_df.set_axis(ind, axis = 1)
-                    #save dataframe
+                    wpli_df.set_axis(ind, axis = 0, inplace = True)
+                    wpli_df.set_axis(ind, axis = 1, inplace = True)
+                    
                     if windows : 
-                        wpli_df.to_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + fmin + '-' + fmax + '.csv')
+                        wpli_df.to_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
                     else:
-                        wpli_df.to_csv(self.output_path + '/' + self.name + '/'+ session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+                        wpli_df.to_csv(self.output_path + '/' + self.name + '/'+ session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
                     
 
             # update wpli freqs list
@@ -83,12 +102,12 @@ class Patient:
         #return wpli matrix as pandas DataFrame
         if [fmin, fmax] in self.wpli_freqs:
             if windows : 
-                return pandas.read_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + fmin + '-' + fmax + '.csv')
-            return pandas.read_csv(self.output_path + '/' + self.name + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+                return pandas.read_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
+            return pandas.read_csv(self.output_path + '/' + self.name + '/' + session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
         else :
             return None
 
-    def plot_wpli(self, windows = True):
+    def plot_wpli(self, windows = True):#works 
         #plot all the available wpli matrices
         for session in self.sessions:
             #iterate through sesions
@@ -97,17 +116,23 @@ class Patient:
                 for [fmin, fmax] in self.wpli_freqs :
                     #load the data
                     if windows : 
-                        wpli_df = pandas.read_csv(self.output_path + '\\' + session + '\\' + state + '_' + fmin + '-' + fmax + '.csv')
+                        wpli_df = pandas.read_csv(self.output_path + '\\' + self.name + '\\' +
+                                                  session + '\\' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
                     
                     else :
-                        wpli_df = pandas.read_csv(self.output_path + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.csv')
+                        wpli_df = pandas.read_csv(self.output_path + '/' + self.name + '/' +
+                                                  session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
+
+                    wpli_df = wpli_df.set_index('Unnamed: 0')
+                    #print(wpli_df.head())
                     
                     regions = wpli_df.index.to_list()
-                    matrix = wpli_df.as_matrix()
+                    matrix = wpli_df.to_numpy()
+                    #print(matrix)
                     #create plot
 
                     fig, ax = plt.subplots()
-                    im = ax.imshow(matrix)
+                    im = ax.imshow(np.real(matrix))
 
                     #create colorbar
                     cbar = ax.figure.colorbar(im, ax = ax, cmap = 'cividis')
@@ -122,7 +147,22 @@ class Patient:
                     # Rotate the tick labels and set their alignment.
                     plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
                     #set title
-                    ax.set_title("wpli matrix of " + self.name + ", session " + session + ", "  + state + ', ' + fmin + '-' + fmax + ' Hz')
+                    ax.set_title("wpli matrix of " + self.name + ", session " + session + ", "  + state + ', ' + str(fmin) + '-' + str(fmax) + ' Hz')
                     #plot and save
                     fig.tight_layout()
-                    plt.savefig(self.output_path + '/' + session + '/' + state + '_' + fmin + '-' + fmax + '.png')
+                    plt.savefig(self.output_path + '/' + self.name + '/' + session +
+                                '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.png')
+
+
+
+
+def avg_mats(wpli):
+    x, y, z = wpli.shape
+    x = int(x)
+    y = int(y)
+    z = int(z)
+    wpli_sum = np.zeros((x, y))
+    for i in range(z):
+        wpli_sum += wpli[:, :, i]
+        
+    return wpli_sum / z
