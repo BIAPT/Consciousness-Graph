@@ -11,6 +11,7 @@
 
 %% Seting up the variables
 clear % to keep only what is needed for this experiment
+setup_project;
 setup_experiments % see this file to edit the experiments
 
 % Create the output directory
@@ -49,7 +50,7 @@ for p = 1:length(participants)
             
             % Load the wpli result
             data = load(strcat(wpli_participant_input_path,filesep,state,'_wpli.mat'));
-            result_wpli = data.result_wpli;
+            result_wpli = data.name;
             wpli_matrix  = result_wpli.data.avg_wpli;
             channels_location = result_wpli.metadata.channels_location;
             
@@ -57,7 +58,7 @@ for p = 1:length(participants)
             [wpli_matrix,channels_location] = filter_non_scalp(wpli_matrix,channels_location);
             
             % Binarize the network
-            t_network = threshold_matrix(wpli_matrix, graph_param.threshold(p,t)); %the threshold is here
+            t_network = threshold_matrix(wpli_matrix, graph_param.threshold(1)); %the threshold is here graph_param.threshold(p,t)
             b_network = binarize_matrix(t_network);
             
             % Find average path length
