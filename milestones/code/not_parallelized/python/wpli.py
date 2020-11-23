@@ -34,7 +34,7 @@ class Patient:
         self.aec_freqs = []
         self.aec_plot_freqs = []
 
-    def calculate_wpli(self, fmin, fmax, channel_order_path, windows = True):#does not work, produces a triangular matrix
+    def calculate_wpli(self, fmin, fmax, channel_order_path, n_windows):
         #calculate wpli if not already done
         if [fmin, fmax] not in self.wpli_freqs:
             #set channel order and regions
@@ -46,11 +46,8 @@ class Patient:
                 for state in self.states:
                     #iterate through states
                     #set correct path
-                    if windows : file_path = self.input_path + '\\' + session + '\\' + self.name + "_" + session + "_" + \
-                        state + "_EC" + self.file_format
-                    else:
-                        file_path = self.input_path + '/' + session + '/' + self.name + \
-                            "_" + session + "_" + state + "_EC" + self.file_format
+                    file_path = self.input_path + '/' + session + '/' + self.name + \
+                        "_" + session + "_" + state + "_EC" + self.file_format
 
                     #load the data
                     if self.file_format == '.set': raw_data = mne.io.read_raw_eeglab(file_path, preload = False, uint16_codec = 'utf-8')
@@ -72,24 +69,26 @@ class Patient:
 
                     #setup for wpli
                     #events = mne.find_events(raw_data, stim_channel = 'Cz')
-                    events, event_ids = mne.events_from_annotations(raw_data)
+                    events = mne.make_fixed_length_events(raw_data)
                     epochs = mne.Epochs(raw_data, events)
                     sfreq = raw_data.info['sfreq']
+                    #channels_array = np.array(channel_order)
+                    #, indices = (channels_array, channels_array)
                     epochs.load_data()
                     #compute the matrix
-                    wpli, freqs, times, n_epochs, n_tapers = spectral_connectivity(epochs, method='wpli', mode='fourier', sfreq = sfreq, fmin=fmin, fmax=fmax)
+                    wpli, freqs, times, n_epochs, n_tapers = spectral_connectivity(epochs, method='wpli', mode='multitaper', sfreq=sfreq, fmin=fmin, fmax=fmax, tmin = 0.0)
                     #save the matrix
+                    #wpli_avg = wpli
                     wpli_avg = avg_mats(wpli)
+                    
                     wpli_df = pandas.DataFrame(wpli_avg)
                     #create indexes
                     ind = pandas.Index(channel_region)
                     wpli_df.set_axis(ind, axis = 0, inplace = True)
                     wpli_df.set_axis(ind, axis = 1, inplace = True)
                     
-                    if windows : 
-                        wpli_df.to_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
-                    else:
-                        wpli_df.to_csv(self.output_path + '/' + self.name + '/'+ session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
+                    
+                    wpli_df.to_csv(self.output_path + '/' + self.name + '/'+ session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
                     
 
             # update wpli freqs list
@@ -98,11 +97,10 @@ class Patient:
         else :
             return True
 
-    def get_wpli(self, fmin, fmax, session, state, windows = True):
+    def get_wpli(self, fmin, fmax, session, state):
         #return wpli matrix as pandas DataFrame
         if [fmin, fmax] in self.wpli_freqs:
-            if windows : 
-                return pandas.read_csv(self.output_path + '\\' + self.name + '\\' + session + '\\' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
+            
             return pandas.read_csv(self.output_path + '/' + self.name + '/' + session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
         else :
             return None
@@ -115,13 +113,9 @@ class Patient:
                 #iterate through states
                 for [fmin, fmax] in self.wpli_freqs :
                     #load the data
-                    if windows : 
-                        wpli_df = pandas.read_csv(self.output_path + '\\' + self.name + '\\' +
-                                                  session + '\\' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
                     
-                    else :
-                        wpli_df = pandas.read_csv(self.output_path + '/' + self.name + '/' +
-                                                  session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
+                    wpli_df = pandas.read_csv(self.output_path + '/' + self.name + '/' +
+                                        session + '/' + state + '_' + str(fmin) + '-' + str(fmax) + '.csv')
 
                     wpli_df = wpli_df.set_index('Unnamed: 0')
                     #print(wpli_df.head())

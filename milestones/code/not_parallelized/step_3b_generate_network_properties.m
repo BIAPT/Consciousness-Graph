@@ -17,6 +17,16 @@ setup_experiments % see this file to edit the experiments
 % Create the output directory
 graph_output_path = mkdir_if_not_exist(output_path,'graph theory');
 wpli_input_path = strcat(output_path,filesep,'wpli');
+average_output_path = mkdir_if_not_exist(graph_output_path,strcat(filesep, 'average'));
+
+
+%create struct to average over the participants
+average_graph_properties = struct();
+average_graph_properties.clustering_coef = zeros(1,length(states)); % normalized clustering coefficient
+average_graph_properties.geff = zeros(1,length(states));  % global efficiency
+average_graph_properties.bsw = zeros(1,length(states));
+average_graph_properties.mod = zeros(1,length(states));
+average_graph_properties.num_participants = 0;
 
 % Iterate over the participants
 for p = 1:length(participants)
@@ -104,6 +114,12 @@ for p = 1:length(participants)
             result_graph.bsw(1,s) = result_graph.clustering_coef(1,s)*result_graph.geff(1,s);
             result_graph.mod(1,s) = mod; % Note: modularity doesn't need to be normalized against random networks
             
+            %add to average graph
+            average_graph_properties.clustering_coef(1,s) = average_graph_properties.clustering_coef(1,s) + result_graph.clustering_coef(1,s);
+            average_graph_properties.geff(1,s) = average_graph_properties.geff(1,s) + result_graph.geff(1,s);
+            average_graph_properties.bsw(1,s) = average_graph_properties.bsw(1,s) + result_graph.bsw(1,s);
+            average_graph_properties.mod(1,s) = average_graph_properties.mod(1,s) + result_graph.mod(1,s);
+            
             %save(graph_state_filename, 'result_graph');
             
         end
@@ -121,28 +137,28 @@ for p = 1:length(participants)
             bar(result_graph.geff)
             title(strcat(participants{p}," ",sessions{t}," Global Efficiency"))
             ylabel('geff')
-            xticklabels({'baseline','post0','post30'})
+            xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
             set(gca,'LineWidth',2,'FontSize',12)
             
             subplot(2,2,2)
             bar(result_graph.clustering_coef)
             title(strcat(participants{p}," ",sessions{t}," Clustering Coefficient"))
             ylabel('cc')
-            xticklabels({'baseline','post0','post30'})
+            xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
             set(gca,'LineWidth',2,'FontSize',12)
             
             subplot(2,2,3)
             bar(result_graph.bsw)
             title(strcat(participants{p}," ",sessions{t}," Binary Small-Worldness"))
             ylabel('bsw')
-            xticklabels({'baseline','post0','post30'})
+            xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
             set(gca,'LineWidth',2,'FontSize',12)
             
             subplot(2,2,4)
             bar(result_graph.mod)
             title(strcat(participants{p}," ",sessions{t}," Modularity"))
             ylabel('mod')
-            xticklabels({'baseline','post0','post30'})
+            xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
             set(gca,'LineWidth',2,'FontSize',12)
             
             imagepath = strcat(graph_participant_output_path,filesep,'_graph_theory_1.fig');
@@ -152,4 +168,52 @@ for p = 1:length(participants)
         end
         
     end
+    %record number of participants for the average
+    average_graph_properties.num_participants = average_graph_properties.num_participants + 1;
 end
+%compute average
+
+average_graph_properties.geff = average_graph_properties.geff / average_graph_properties.num_participants;
+average_graph_properties.clustering_coef = average_graph_properties.clustering_coef / average_graph_properties.num_participants;
+average_graph_properties.mod = average_graph_properties.mod / average_graph_properties.num_participants;
+average_graph_properties.bsw = average_graph_properties.bsw / average_graph_properties.num_participants;
+
+%plot and save average graph
+average_data_filename = strcat(average_output_path,filesep,'average_data.mat');
+save(average_data_filename, 'average_graph_properties');
+
+figure
+            
+subplot(2,2,1)
+bar(average_graph_properties.geff)
+title("Average Global Efficiency")
+ylabel('geff')
+xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
+set(gca,'LineWidth',2,'FontSize',12)
+            
+subplot(2,2,2)
+bar(average_graph_properties.clustering_coef)
+title("Average Clustering Coefficient")
+ylabel('cc')
+xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
+set(gca,'LineWidth',2,'FontSize',12)
+            
+subplot(2,2,3)
+bar(average_graph_properties.bsw)
+title("Average Binary Small-Worldness")
+ylabel('bsw')
+xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
+set(gca,'LineWidth',2,'FontSize',12)
+            
+subplot(2,2,4)
+bar(average_graph_properties.mod)
+title("Average Modularity")
+ylabel('mod')
+xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
+set(gca,'LineWidth',2,'FontSize',12)
+            
+imagepath = strcat(average_output_path,filesep,'average_graph_theory_.fig');
+saveas(gcf,imagepath)
+close(gcf)
+
+
