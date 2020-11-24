@@ -16,17 +16,18 @@ setup_experiments % see this file to edit the experiments
 
 % Create the output directory
 graph_output_path = mkdir_if_not_exist(output_path,'graph theory');
-wpli_input_path = strcat(output_path,filesep,'wpli');
+pli_input_path = strcat(output_path,filesep,'dpli');
 average_output_path = mkdir_if_not_exist(graph_output_path,strcat(filesep, 'average'));
 
+%create a struct to store participant data
+all_participants = struct();
+all_participants.clustering_coef = zeros(length(participants),length(states)); % normalized clustering coefficient
+all_participants.geff = zeros(length(participants),length(states));  % global efficiency
+all_participants.bsw = zeros(length(participants),length(states));
+all_participants.mod = zeros(length(participants),length(states));
 
-%create struct to average over the participants
-average_graph_properties = struct();
-average_graph_properties.clustering_coef = zeros(1,length(states)); % normalized clustering coefficient
-average_graph_properties.geff = zeros(1,length(states));  % global efficiency
-average_graph_properties.bsw = zeros(1,length(states));
-average_graph_properties.mod = zeros(1,length(states));
-average_graph_properties.num_participants = 0;
+%store current number of participant processed
+num_participant = 1;
 
 % Iterate over the participants
 for p = 1:length(participants)
@@ -40,7 +41,7 @@ for p = 1:length(participants)
         session = sessions{t};
         disp(strcat("Session:", session));
         graph_participant_output_path =  mkdir_if_not_exist(graph_output_path,strcat(participant,filesep,session));
-        wpli_participant_input_path = strcat(wpli_input_path,filesep,participant,filesep,session);
+        pli_participant_input_path = strcat(pli_input_path,filesep,participant,filesep,session);
         
         result_graph = struct();
         result_graph.channels_location = [];
@@ -59,16 +60,16 @@ for p = 1:length(participants)
             disp(strcat("State :", state));
             
             % Load the wpli result
-            data = load(strcat(wpli_participant_input_path,filesep,state,'_wpli.mat'));
-            result_wpli = data.name;
-            wpli_matrix  = result_wpli.data.avg_wpli;
-            channels_location = result_wpli.metadata.channels_location;
+            data = load(strcat(pli_participant_input_path,filesep,state,'_dpli.mat'));
+            result_pli = data.name;
+            pli_matrix  = result_pli.data.avg_dpli;
+            channels_location = result_pli.metadata.channels_location;
             
             % Filter the channels location to match the filtered motifs
-            [wpli_matrix,channels_location] = filter_non_scalp(wpli_matrix,channels_location);
+            [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location);
             
             % Binarize the network
-            t_network = threshold_matrix(wpli_matrix, graph_param.threshold(1)); %the threshold is here graph_param.threshold(p,t)
+            t_network = threshold_matrix(pli_matrix, graph_param.threshold(1)); %the threshold is here graph_param.threshold(p,t)
             b_network = binarize_matrix(t_network);
             
             % Find average path length
@@ -81,7 +82,7 @@ for p = 1:length(participants)
             [M,mod] = community_louvain(b_network,1); %community, modularity
             
             % Calculate the null network parameters
-            random_networks = zeros(graph_param.number_surrogate,length(wpli_matrix),length(wpli_matrix));
+            random_networks = zeros(graph_param.number_surrogate,length(pli_matrix),length(pli_matrix));
             parfor r = 1:graph_param.number_surrogate
                 disp(strcat("Random network #",string(r)));
                 [random_networks(r,:,:),~] = randmio_und(b_network,10);    % generate random matrix
@@ -115,16 +116,16 @@ for p = 1:length(participants)
             result_graph.mod(1,s) = mod; % Note: modularity doesn't need to be normalized against random networks
             
             %add to average graph
-            average_graph_properties.clustering_coef(1,s) = average_graph_properties.clustering_coef(1,s) + result_graph.clustering_coef(1,s);
-            average_graph_properties.geff(1,s) = average_graph_properties.geff(1,s) + result_graph.geff(1,s);
-            average_graph_properties.bsw(1,s) = average_graph_properties.bsw(1,s) + result_graph.bsw(1,s);
-            average_graph_properties.mod(1,s) = average_graph_properties.mod(1,s) + result_graph.mod(1,s);
+            all_participants.clustering_coef(num_participant,s) = result_graph.clustering_coef(1,s);
+            all_participants.geff(num_participant,s) = result_graph.geff(1,s);
+            all_participants.bsw(num_participant,s) = result_graph.bsw(1,s);
+            all_participants.mod(num_participant,s) = result_graph.mod(1,s);
             
             %save(graph_state_filename, 'result_graph');
             
         end
         result_graph.channels_location = channels_location;
-        result_graph.wpli_matrix = wpli_matrix;
+        result_graph.pli_matrix = pli_matrix;
         result_graph.binary_matrix = b_network;
         save(graph_session_filename, 'result_graph');
         
@@ -169,48 +170,97 @@ for p = 1:length(participants)
         
     end
     %record number of participants for the average
-    average_graph_properties.num_participants = average_graph_properties.num_participants + 1;
+    num_participant = num_participant + 1;
 end
-%compute average
+%add up the values to conmpute average
+average = struct();
+average.clustering_coef = zeros(1, length(states));
+average.geff = zeros(1, length(states));
+average.bsw = zeros(1, length(states));
+average.mod = zeros(1, length(states));
 
-average_graph_properties.geff = average_graph_properties.geff / average_graph_properties.num_participants;
-average_graph_properties.clustering_coef = average_graph_properties.clustering_coef / average_graph_properties.num_participants;
-average_graph_properties.mod = average_graph_properties.mod / average_graph_properties.num_participants;
-average_graph_properties.bsw = average_graph_properties.bsw / average_graph_properties.num_participants;
+for i = 1:length(participants)
+    for s = 1:length(states)
+        average.clustering_coef(1, s) = average.clustering_coef(1, s) + all_participants.clustering_coef(i, s);
+        average.geff(1, s) = average.geff(1, s) + all_participants.geff(i, s);
+        average.bsw(1, s) = average.bsw(1, s) + all_participants.bsw(i, s);
+        average.mod(1, s) = average.mod(1, s) + all_participants.mod(i, s);
+    end
+end
+
+%compute average
+average.clustering_coef = average.clustering_coef / length(participants);
+average.geff = average.geff / length(participants);
+average.mod = average.mod / length(participants);
+average.bsw = average.bsw / length(participants);
+
+%compute standard deviation
+std_dev = struct();
+std_dev.clustering_coef = zeros(1, length(states));
+std_dev.geff = zeros(1, length(states));
+std_dev.mod = zeros(1, length(states));
+std_dev.bsw = zeros(1, length(states));
+
+for j=1:length(participants)
+    for s = 1:length(states)
+        std_dev.clustering_coef(1, s) = std_dev.clustering_coef(1, s) + abs(average.clustering_coef(1, s) - all_participants.clustering_coef(j, s));
+        std_dev.geff(1, s) = std_dev.geff(1, s) + abs(average.geff(1, s) - all_participants.geff(j, s));
+        std_dev.mod(1, s) = std_dev.mod(1, s) + abs(average.mod(1, s) - all_participants.mod(j, s));
+        std_dev.bsw(1, s) = std_dev.bsw(1, s) + abs(average.bsw(1, s) - all_participants.bsw(j, s));
+    end
+end
+
+std_dev.clustering_coef = std_dev.clustering_coef / length(participants);
+std_dev.geff = std_dev.geff / length(participants);
+std_dev.mod = std_dev.mod / length(participants);
+std_dev.bsw = std_dev.bsw / length(participants);
 
 %plot and save average graph
 average_data_filename = strcat(average_output_path,filesep,'average_data.mat');
-save(average_data_filename, 'average_graph_properties');
+save(average_data_filename, 'average');
 
 figure
-            
+
+x = 1:10;
 subplot(2,2,1)
-bar(average_graph_properties.geff)
+bar(x, average.geff)
 title("Average Global Efficiency")
 ylabel('geff')
 xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
 set(gca,'LineWidth',2,'FontSize',12)
+hold on
+er = errorbar(x, average.geff,std_dev.geff, std_dev.geff);
+hold off
             
 subplot(2,2,2)
-bar(average_graph_properties.clustering_coef)
+bar(x, average.clustering_coef)
 title("Average Clustering Coefficient")
 ylabel('cc')
 xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
 set(gca,'LineWidth',2,'FontSize',12)
+hold on
+er = errorbar(x, average.clustering_coef,std_dev.clustering_coef, std_dev.clustering_coef);
+hold off
             
 subplot(2,2,3)
-bar(average_graph_properties.bsw)
+bar(x, average.bsw)
 title("Average Binary Small-Worldness")
 ylabel('bsw')
 xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
 set(gca,'LineWidth',2,'FontSize',12)
+hold on
+er = errorbar(x, average.bsw,std_dev.bsw, std_dev.bsw);
+hold off
             
 subplot(2,2,4)
-bar(average_graph_properties.mod)
+bar(x, average.mod)
 title("Average Modularity")
 ylabel('mod')
 xticklabels({'base','induct','em_1st_5', 'em_last_5', 'post_30', 'post_60', 'post_90','post_120','post_150','post_180'})
 set(gca,'LineWidth',2,'FontSize',12)
+hold on
+er = errorbar(x, average.mod,std_dev.mod, std_dev.mod);
+hold off
             
 imagepath = strcat(average_output_path,filesep,'average_graph_theory_.fig');
 saveas(gcf,imagepath)

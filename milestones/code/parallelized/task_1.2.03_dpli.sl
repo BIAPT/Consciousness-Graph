@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH --job-name=generate-dpli-03 # give a name to the job
+#SBATCH --job-name=generate-dpli-17 # give a name to the job
 #SBATCH --account=def-sblain # adjust to match the accounting group
 #SBATCH --time=1-00:00:00 # adjust to match the time required for the job, (D-HH:MM:SS) be as accurate ap
 #SBATCH --nodes=1 # adjust to the number of nodes
@@ -16,7 +16,7 @@ module load matlab/2020a
 mkdir -p /scratch/$USER/$SLURM_JOB_ID
 
 # run
-srun matlab -nodisplay -r "participant = 'MDFA03'; generate_dpli" # will run on at most 40 cores
+srun matlab -nodisplay -r "participant = 'MDFA17'; generate_dpli" # will run on at most 40 cores
 
 # cleanup
 rm -rf /scratch/$USER/$SLURM_JOB_ID
