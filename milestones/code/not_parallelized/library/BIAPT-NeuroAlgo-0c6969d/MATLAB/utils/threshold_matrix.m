@@ -1,4 +1,4 @@
-function [t_matrix] = threshold_matrix(matrix,t_level)
+function [t_matrix] = threshold_matrix(matrix,t_level, mode)
 %THRESHOLD_MATRIX Threshold a matrix to have element below a significant
 %amount to 0
 %   Matrix: N*N matrix with value within any range
@@ -14,11 +14,20 @@ function [t_matrix] = threshold_matrix(matrix,t_level)
     sorted_array = sort(array);
     t_index = floor(num_element*(1 - t_level)) + 1;
     t_element = sorted_array(t_index);
+    if strcmp(mode, 'dpli')
+        t_element_lower = abs(t_element - 1);
+    end
+    
     
     %% Threshold the matrix
     t_matrix = matrix;
-    t_matrix(t_matrix < t_element) = 0;
+    if strcmp(mode, 'dpli')
+        t_matrix(t_matrix < t_element | t_matrix > t_element_lower) = 0;
+    else
+        t_matrix(t_matrix < t_element) = 0;
+    end
     
+    %t_matrix(t_matrix < t_element) = 0;
     %% Remove the diagonal elements
     t_matrix = t_matrix - diag(diag(t_matrix));
 end

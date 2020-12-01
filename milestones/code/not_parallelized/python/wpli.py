@@ -76,12 +76,13 @@ class Patient:
                     #, indices = (channels_array, channels_array)
                     epochs.load_data()
                     #compute the matrix
-                    wpli, freqs, times, n_epochs, n_tapers = spectral_connectivity(epochs, method='wpli', mode='multitaper', sfreq=sfreq, fmin=fmin, fmax=fmax, tmin = 0.0)
+                    wpli, freqs, times, n_epochs, n_tapers = spectral_connectivity(epochs, method='wpli', mode='fourier', sfreq=sfreq, fmin=fmin, fmax=fmax, tmin = 0.0)
                     #save the matrix
                     #wpli_avg = wpli
                     wpli_avg = avg_mats(wpli)
+                    wpli_complete = wpli_avg + wpli_avg.T
                     
-                    wpli_df = pandas.DataFrame(wpli_avg)
+                    wpli_df = pandas.DataFrame(wpli_complete)
                     #create indexes
                     ind = pandas.Index(channel_region)
                     wpli_df.set_axis(ind, axis = 0, inplace = True)

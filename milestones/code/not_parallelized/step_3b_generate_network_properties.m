@@ -13,11 +13,12 @@
 clear % to keep only what is needed for this experiment
 setup_project;
 setup_experiments % see this file to edit the experiments
-
+mode = 'dpli';
 % Create the output directory
 graph_output_path = mkdir_if_not_exist(output_path,'graph theory');
-pli_input_path = strcat(output_path,filesep,'dpli');
-average_output_path = mkdir_if_not_exist(graph_output_path,strcat(filesep, 'average'));
+mode_output_path = mkdir_if_not_exist(graph_output_path, strcat(filesep, mode));
+pli_input_path = strcat(output_path,filesep,mode);
+average_output_path = mkdir_if_not_exist(mode_output_path,strcat(filesep, 'average'));
 
 %create a struct to store participant data
 all_participants = struct();
@@ -40,7 +41,7 @@ for p = 1:length(participants)
     for t = 1:length(sessions)
         session = sessions{t};
         disp(strcat("Session:", session));
-        graph_participant_output_path =  mkdir_if_not_exist(graph_output_path,strcat(participant,filesep,session));
+        graph_participant_output_path =  mkdir_if_not_exist(mode_output_path,strcat(participant,filesep,session));
         pli_participant_input_path = strcat(pli_input_path,filesep,participant,filesep,session);
         
         result_graph = struct();
@@ -60,16 +61,20 @@ for p = 1:length(participants)
             disp(strcat("State :", state));
             
             % Load the wpli result
-            data = load(strcat(pli_participant_input_path,filesep,state,'_dpli.mat'));
+            data = load(strcat(pli_participant_input_path,filesep,state,'_',mode,'.mat'));
             result_pli = data.name;
-            pli_matrix  = result_pli.data.avg_dpli;
+            if strcmp(mode, 'dpli')
+                pli_matrix  = result_pli.data.avg_dpli;
+            else
+                pli_matrix  = result_pli.data.avg_wpli;
+            end
             channels_location = result_pli.metadata.channels_location;
             
             % Filter the channels location to match the filtered motifs
             [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location);
             
             % Binarize the network
-            t_network = threshold_matrix(pli_matrix, graph_param.threshold(1)); %the threshold is here graph_param.threshold(p,t)
+            t_network = threshold_matrix(pli_matrix, graph_param.threshold(p,s), mode); %the threshold is here graph_param.threshold(p,t)
             b_network = binarize_matrix(t_network);
             
             % Find average path length

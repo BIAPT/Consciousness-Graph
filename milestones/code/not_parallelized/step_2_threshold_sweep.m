@@ -6,37 +6,49 @@
 % modified by Danielle Nadin 2020-02-25 adapt for Motif Analysis Augmented pipeline
 
 clear;
+setup_project;
 setup_experiments % see this file to edit the experiments
-participant = 'MDFA10';
 session = 'T1';
-state = 'baseline';
+mode = 'dpli';
 
-%Import wpli data
-wpli_input_path = strcat(output_path,filesep,'wpli',filesep,participant,filesep,session,filesep,state,'_wpli');
-load(wpli_input_path);
-wpli_matrix = result_wpli.data.avg_wpli;
-channels_location = result_wpli.metadata.channels_location;
+for p = 1: length(participants)
+    for s = 1 : length(states)
+        
+        %Import pli data
+        pli_input_path = strcat(output_path,filesep,mode,filesep,participants{p},filesep,session,filesep,states{s} ,'_', mode);
+        load(pli_input_path);
+        if strcmp(mode, 'dpli')
+            pli_matrix = name.data.avg_dpli;
+            channels_location = name.metadata.channels_location;
+        else
+            pli_matrix = name.data.avg_wpli;
+            channels_location = name.metadata.channels_location;
+        end
 
-% Here we need to filter the non_scalp channels
-[wpli_matrix,channels_location] = filter_non_scalp(wpli_matrix,channels_location);
+        % Here we need to filter the non_scalp channels
+        [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location);
 
-%loop through thresholds
-for j = 1:length(sweep_param.range) 
-    current_threshold = sweep_param.range(j);
-    disp(strcat("Doing the threshold : ", string(current_threshold)));
+        %loop through thresholds
+        for j = 1:length(sweep_param.range) 
+            current_threshold = sweep_param.range(j);
+            disp(strcat("Doing the threshold : ", string(current_threshold)));
     
-    % Thresholding and binarization using the current threshold
-    t_network = threshold_matrix(wpli_matrix, current_threshold);
-    b_network = binarize_matrix(t_network);
+            % Thresholding and binarization using the current threshold
+            t_network = threshold_matrix(pli_matrix, current_threshold, mode);
+            b_network = binarize_matrix(t_network);
     
-    % check if the binary network is disconnected
-    % Here our binary network (b_network) is a weight matrix but also an
-    % adjacency matrix.
-    distance = distance_bin(b_network);
+            % check if the binary network is disconnected
+            % Here our binary network (b_network) is a weight matrix but also an
+            % adjacency matrix.
+            distance = distance_bin(b_network);
     
-    % Here we check if there is one node that is disconnected
-    if(sum(isinf(distance(:))))
-        disp(strcat("Final threshold: ", string(sweep_param.range(j-1))));
-        break;
+            % Here we check if there is one node that is disconnected
+            if(sum(isinf(distance(:))))
+                disp(strcat("Final threshold: ", string(sweep_param.range(j-1))));
+                graph_param.threshold(p, s) = sweep_param.range(j-1);
+                break;
+            end
+        end
     end
 end
+
