@@ -13,6 +13,7 @@
 clear % to keep only what is needed for this experiment
 setup_project;
 setup_experiments % see this file to edit the experiments
+step_2_threshold_sweep;
 mode = 'dpli';
 % Create the output directory
 graph_output_path = mkdir_if_not_exist(output_path,'graph theory');
@@ -53,7 +54,21 @@ for p = 1:length(participants)
         result_graph.bsw = zeros(1,length(states));
         result_graph.mod = zeros(1,length(states));
         
+        binary_matrices = struct();
+        binary_matrices.baseline = [];
+        binary_matrices.induction_first_5 = [];
+        binary_matrices.emergence_first_5 = [];
+        binary_matrices.emergence_last_5 = [];
+        binary_matrices.post_30 = [];
+        binary_matrices.post_60 = [];
+        binary_matrices.post_90 = [];
+        binary_matrices.post_120 = [];
+        binary_matrices.post_150 = [];
+        binary_matrices.post_180 = [];
+        
+        
         graph_session_filename = strcat(graph_participant_output_path,filesep,'_graph_theory.mat');
+        bmatrix_session_filename = strcat(graph_participant_output_path,filesep,'binary_matrices.mat');
         
         % Iterate over the states
         for s = 1:length(states)
@@ -62,7 +77,7 @@ for p = 1:length(participants)
             
             % Load the wpli result
             data = load(strcat(pli_participant_input_path,filesep,state,'_',mode,'.mat'));
-            result_pli = data.name;
+             result_pli = data.name;
             if strcmp(mode, 'dpli')
                 pli_matrix  = result_pli.data.avg_dpli;
             else
@@ -74,8 +89,31 @@ for p = 1:length(participants)
             [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location);
             
             % Binarize the network
-            t_network = threshold_matrix(pli_matrix, graph_param.threshold(p,s), mode); %the threshold is here graph_param.threshold(p,t)
+            t_network = threshold_matrix(pli_matrix, graph_param.threshold(p,s) , mode); %the threshold is here graph_param.threshold(p,t)
             b_network = binarize_matrix(t_network);
+            %store bmatrix
+            switch state
+                case 'baseline'
+                    binary_matrices.baseline = b_network;
+                case 'induction_first_5'
+                    binary_matrices.induction_first_5 = b_network;
+                case 'emergence_first_5'
+                    binary_matrices.emergence_first_5 = b_network;
+                case 'emergence_last_5'
+                    binary_matrices.emergence_last_5 = b_network;
+                case '30_post_recovery'
+                    binary_matrices.post_30 = b_network;
+                case '60_post_recovery'
+                    binary_matrices.post_60 = b_network;
+                case '90_post_recovery'
+                    binary_matrices.post_90 = b_network;
+                case '120_post_recovery'
+                    binary_matrices.post_120 = b_network;
+                case '150_post_recovery'
+                    binary_matrices.post_150 = b_network;
+                case '180_post_recovery'
+                    binary_matrices.post_180 = b_network;
+            end
             
             % Find average path length
             [lambda,geff,~,~,~] = charpath(distance_bin(b_network),0,0);
@@ -133,6 +171,41 @@ for p = 1:length(participants)
         result_graph.pli_matrix = pli_matrix;
         result_graph.binary_matrix = b_network;
         save(graph_session_filename, 'result_graph');
+        save(bmatrix_session_filename, 'binary_matrices');
+        
+        bmatrices_participant_output_path =  mkdir_if_not_exist(graph_participant_output_path,'binary matrices plots');
+        
+        for i = 1: length(states)
+            state_ = states{i}
+             switch i
+                case 1
+                    matrix = binary_matrices.baseline;
+                case 2
+                    matrix = binary_matrices.induction_first_5;
+                case 3
+                    matrix = binary_matrices.emergence_first_5;
+                case 4
+                    matrix = binary_matrices.emergence_last_5;
+                case 5
+                    matrix = binary_matrices.post_30;
+                case 6
+                    matrix = binary_matrices.post_60;
+                case 7
+                    matrix = binary_matrices.post_90;
+                case 8
+                    matrix = binary_matrices.post_120;
+                case 9
+                    matrix = binary_matrices.post_150;
+                case 10
+                    matrix = binary_matrices.post_180;
+             end
+            
+             plot_wpli(matrix,strcat(participant," ",session," ",state_," binary matrix"),[],'jet',0); 
+             colorbar
+             imagepath = strcat(bmatrices_participant_output_path,filesep, state_,'_binary_matrix.fig');
+             saveas(gcf,imagepath);
+             close(gcf)
+        end
         
         %plot change over states (within session)
         if graph_param.figure

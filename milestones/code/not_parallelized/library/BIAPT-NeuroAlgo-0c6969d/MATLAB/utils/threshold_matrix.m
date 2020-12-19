@@ -14,6 +14,7 @@ function [t_matrix] = threshold_matrix(matrix,t_level, mode)
     sorted_array = sort(array);
     t_index = floor(num_element*(1 - t_level)) + 1;
     t_element = sorted_array(t_index);
+    
     if strcmp(mode, 'dpli')
         t_element_lower = abs(t_element - 1);
     end
@@ -21,8 +22,18 @@ function [t_matrix] = threshold_matrix(matrix,t_level, mode)
     
     %% Threshold the matrix
     t_matrix = matrix;
+    
     if strcmp(mode, 'dpli')
-        t_matrix(t_matrix < t_element | t_matrix > t_element_lower) = 0;
+        
+        for r = 1:num_row 
+           for c = 1 : num_col
+               element = t_matrix(r,c);
+               %disp((element < t_element_lower) && (element > t_element));
+              if (element > t_element_lower) && (element < t_element)
+                  t_matrix(r,c) = 0;
+              end       
+          end
+        end
     else
         t_matrix(t_matrix < t_element) = 0;
     end

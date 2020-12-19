@@ -46,6 +46,9 @@ for p = 1: length(participants)
             if(sum(isinf(distance(:))))
                 disp(strcat("Final threshold: ", string(sweep_param.range(j-1))));
                 graph_param.threshold(p, s) = sweep_param.range(j-1);
+                if strcmp(mode, 'dpli')
+                    graph_param.threshold(p, s) = sweep_param.range(j-1);
+                end
                 break;
             end
         end

@@ -1,2 +1,2 @@
-raw_data_path=C:\Users\rapha\OneDrive - McGill University\School\Research\Blain lab\data\MDFA\Resting state analysis
+raw_data_path=D:\Raphael Christin\Blain lab\data\MDFA\Resting state analysis
 output_path=C:\Users\rapha\OneDrive\Documents\School\Research\first
