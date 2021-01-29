@@ -76,20 +76,21 @@ for p = 1:length(participants)
             disp(strcat("State :", state));
             
             % Load the wpli result
-            data = load(strcat(pli_participant_input_path,filesep,state,'_',mode,'.mat'));
-             result_pli = data.name;
+            load(strcat(pli_participant_input_path,filesep,state,'_',mode,'.mat'));
             if strcmp(mode, 'dpli')
-                pli_matrix  = result_pli.data.avg_dpli;
-            else
-                pli_matrix  = result_pli.data.avg_wpli;
+                pli_matrix  = result_dpli.data.avg_dpli;
+                channels_location = result_dpli.metadata.channels_location;
+            elseif strcmp(mode, 'wpli')
+                pli_matrix  = result_wpli.data.avg_wpli;
+                channels_location = result_wpli.metadata.channels_location;
             end
-            channels_location = result_pli.metadata.channels_location;
+            
             
             % Filter the channels location to match the filtered motifs
             [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location);
             
             % Binarize the network
-            t_network = threshold_matrix(pli_matrix, graph_param.threshold(p,s) , mode); %the threshold is here graph_param.threshold(p,t)
+            t_network = threshold_matrix(pli_matrix, graph_param.threshold(p,t), mode); %the threshold is here graph_param.threshold(p,t)
             b_network = binarize_matrix(t_network);
             %store bmatrix
             switch state

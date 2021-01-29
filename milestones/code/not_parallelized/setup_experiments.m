@@ -43,11 +43,11 @@ dpli_param.figure = 1;
 
 % Threshold sweep Experiment Variable
 sweep_param = struct();
-sweep_param.range = 1.00:-0.01:0.01; %more connected to less connected
+sweep_param.range = 1.0:-0.01:0.0; %more connected to less connected
 
 % graph theory experiment variables
 graph_param = struct();
-graph_param.threshold = zeros(length(participants), length(states));%[0.66;0.48], 0.41, 0.57, zeros(length(participants), length(states))
+graph_param.threshold = zeros(length(participants), length(states));%[0.66;0.48], 0.41, 0.57, 
 graph_param.number_surrogate = 10;
 graph_param.figure = 1; 
 graph_param.average = 0; %TODO

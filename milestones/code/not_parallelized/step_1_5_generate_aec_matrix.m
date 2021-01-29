@@ -84,15 +84,15 @@ for s = 1:length(step_size)
             %Vfilt = filter_bandpass(Value, fd, low_frequency, high_frequency);
             %Vfilt = Vfilt';
             frequency_band = [low_frequency, high_frequency];
-            filtered_data = recording.filter_data(recording.data, frequency_band);
+            recording = filter_data(recording, recording.data, frequency_band); %error happens here
 
             % number of time points and Regions of Interest
-            num_points = length(filtered_data);
+            %num_points = length(filtered_data);
 
             %% Slice up the data into windows
 
-            sampling_rate = 1000; % in Hz
-            [windowed_data, num_window] = create_sliding_window(filtered_data, window_size, step, sampling_rate);
+            sampling_rate = 500; % in Hz
+            [windowed_data, num_window] = create_sliding_window(recording.filt_data, window_size, step, sampling_rate);% error here
 
             %% Iterate over each window and calculate pairwise corrected aec
             result = struct();
@@ -150,7 +150,7 @@ function [windowed_data, num_window] = create_sliding_window(data, window_size, 
     % num_window*point*channel tensor
     % num_window: the number of window in the windowed_data
     
-    [length_data, num_region] = size(data);
+    [num_region, length_data] = size(data);
     
     % Need to round from seconds -> points conversion since points are
     % integer valued
@@ -213,4 +213,11 @@ function [aec] = aec_pairwise_corrected(data, num_regions, cut_amount)
     
     % Set the diagonal to 0 
     aec(:,:) = aec(:,:).*~eye(num_regions);
+end
+
+function [recording] = filter_data(recording, data, frequency_band)
+    low_frequency = frequency_band(1);
+    high_frequency = frequency_band(2);
+    samp_freq = recording.sampling_rate;
+    recording.filt_data = filter_bandpass(data, samp_freq, low_frequency, high_frequency);
 end

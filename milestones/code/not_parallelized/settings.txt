@@ -1,2 +1,2 @@
-raw_data_path=D:\Raphael Christin\Blain lab\data\MDFA\Resting state analysis
-output_path=C:\Users\rapha\OneDrive\Documents\School\Research\first
+raw_data_path=/home/raphchr/research/data/MDFA/
+output_path=/home/raphchr/research/results/
