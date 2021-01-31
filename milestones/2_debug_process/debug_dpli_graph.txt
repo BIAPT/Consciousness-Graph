@@ -1,3 +1,10 @@
 I compared the values of the matrices until I was sure that allk operations were using the same ones
 It seems that the threshold sweep uses the data that still contains the non-scalp electrodes
 I hope that filtering before the threshold sweep might fix the problem
+It did not fix the problem so I am looking at the matrix produced by filtering the dpli matrix from the command line only
+They are the same so thats not the problem
+I will look at how many items are left after thresholding
+I think the problem might be that I include the opposite elements in the dpli matrix. That causes too many elements to be included. reducing that by half might solve the problem
+This doesn't seem to  work since the thresholds used are obtained in the same way.
+I will try to visualize the logic and make sure it is good
+I realized that I was assuming that the opposite values in the dpli matrix ( [1,3] vs [3,1] ) added up to 1, but looking at the matrix it is not the case. If it should be the case then the problem is in the dpli code. If close to 1 is to be expected then I need to change my thresholding to reflect that. I will be doing that and checking the results.
