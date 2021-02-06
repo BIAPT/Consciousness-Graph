@@ -13,8 +13,8 @@
 clear % to keep only what is needed for this experiment
 setup_project;
 setup_experiments % see this file to edit the experiments
-step_2_threshold_sweep;
-mode = 'dpli';
+%step_2_threshold_sweep;
+mode = 'wpli';
 % Create the output directory
 graph_output_path = mkdir_if_not_exist(output_path,'graph theory');
 mode_output_path = mkdir_if_not_exist(graph_output_path, strcat(filesep, mode));
@@ -76,21 +76,21 @@ for p = 1:length(participants)
             disp(strcat("State :", state));
             
             % Load the wpli result
-            load(strcat(pli_participant_input_path,filesep,state,'_',mode,'.mat'));
+            data = load(strcat(pli_participant_input_path,filesep,state,'_',mode,'.mat'));
             if strcmp(mode, 'dpli')
-                pli_matrix  = result_dpli.data.avg_dpli;
-                channels_location = result_dpli.metadata.channels_location;
+                pli_matrix  = data.name.data.avg_dpli;
+                channels_location = data.name.metadata.channels_location;
             elseif strcmp(mode, 'wpli')
-                pli_matrix  = result_wpli.data.avg_wpli;
-                channels_location = result_wpli.metadata.channels_location;
+                pli_matrix  = data.name.data.avg_wpli;
+                channels_location = data.name.metadata.channels_location;
             end
             
             
             % Filter the channels location to match the filtered motifs
-            [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location);
+            [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location); %compare filtering
             
             % Binarize the network
-            t_network = threshold_matrix(pli_matrix, graph_param.threshold(p,t), mode); %the threshold is here graph_param.threshold(p,t)
+            t_network = threshold_matrix(pli_matrix, graph_param.threshold, mode); %the threshold is here graph_param.threshold(p,t)
             b_network = binarize_matrix(t_network);
             %store bmatrix
             switch state

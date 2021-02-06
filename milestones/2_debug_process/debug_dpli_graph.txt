@@ -1,3 +1,7 @@
 I compared the values of the matrices until I was sure that allk operations were using the same ones
 It seems that the threshold sweep uses the data that still contains the non-scalp electrodes
 I hope that filtering before the threshold sweep might fix the problem
+It did not fix the problem
+I will make sure that the filtered data is the same on both sides
+It is the same.
+

@@ -9,21 +9,23 @@ clear;
 setup_project;
 setup_experiments % see this file to edit the experiments
 session = 'T1';
-mode = 'dpli';
+mode = 'wpli';
 
 for p = 1: length(participants)
     for s = 1 : length(states)
         
         %Import pli data
         pli_input_path = strcat(output_path,mode,filesep,participants{p},filesep,session,filesep,states{s} ,'_', mode, '.mat');
-        load(pli_input_path);
+        data = load(pli_input_path);
         if strcmp(mode, 'dpli')
-            pli_matrix = result_dpli.data.avg_dpli;
-            channels_location = result_dpli.metadata.channels_location;
+            pli_matrix = data.name.data.avg_dpli;
+            channels_location = data.name.metadata.channels_location;
         elseif strcmp(mode, 'wpli')
-            pli_matrix = result_wpli.data.avg_wpli;
-            channels_location = result_wpli.metadata.channels_location;
+            pli_matrix = data.name.data.avg_wpli;
+            channels_location = data.name.metadata.channels_location;
         end
+        
+        
 
         % Here we need to filter the non_scalp channels
         [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location);

@@ -8,7 +8,7 @@
 % once with non-overlapping windows in the alpha bandwidth.  
 
 %% Seting up the variables
-clear % to keep only what is needed for this experiment
+%clear % to keep only what is needed for this experiment
 setup_project;
 setup_experiments % see this file to edit the experiments
 
@@ -42,8 +42,7 @@ eyes = 'EC';
 % Participant Path (will need to iterate at the end over all the files)
 for s = 1:length(step_size)
     step = step_size{s};
-    for p = 1:length(participants)
-       participant = participants{p};
+    %for p = 1:length(participants)
        participant_out_path = mkdir_if_not_exist(aec_output_path, strcat(participant,filesep,session));
        for e = 1:length(states)
             state = states{e};
@@ -133,7 +132,7 @@ for s = 1:length(step_size)
             close(gcf)
             %plot_sidebar(imagepath,0,0.3,r_regions([left_ind right_ind]));
        end
-    end
+    %end
 end
     
 % This function is to get overlapping windowed data
