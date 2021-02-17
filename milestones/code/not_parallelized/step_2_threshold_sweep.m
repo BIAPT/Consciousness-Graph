@@ -9,7 +9,7 @@ clear;
 setup_project;
 setup_experiments % see this file to edit the experiments
 session = 'T1';
-mode = 'wpli';
+mode = 'aec';
 
 for p = 1: length(participants)
     for s = 1 : length(states)
@@ -23,6 +23,20 @@ for p = 1: length(participants)
         elseif strcmp(mode, 'wpli')
             pli_matrix = data.name.data.avg_wpli;
             channels_location = data.name.metadata.channels_location;
+        elseif strcmp(mode, 'aec')
+                pli_matrix = data.result.aec;
+                [hight, width, len] = size(pli_matrix);
+                temp = zeros(hight, width);
+                for i=1:hight
+                    for j=1:width
+                        for k=1:len
+                            temp(i,j) = temp(i,j) + pli_matrix(i,j,k);
+                        end
+                    end
+                end
+                temp = temp/len;
+                pli_matrix=temp;
+                channels_location = data.result.labels;
         end
         
         

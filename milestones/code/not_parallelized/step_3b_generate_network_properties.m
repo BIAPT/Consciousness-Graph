@@ -10,16 +10,19 @@
 %}
 
 %% Seting up the variables
-clear % to keep only what is needed for this experiment
+%clear % to keep only what is needed for this experiment
 setup_project;
 setup_experiments % see this file to edit the experiments
 %step_2_threshold_sweep;
-mode = 'wpli';
+%mode = 'aec';
 % Create the output directory
 graph_output_path = mkdir_if_not_exist(output_path,'graph theory');
-mode_output_path = mkdir_if_not_exist(graph_output_path, strcat(filesep, mode));
+mode_output_path = mkdir_if_not_exist(graph_output_path, mode);
 pli_input_path = strcat(output_path,filesep,mode);
-average_output_path = mkdir_if_not_exist(mode_output_path,strcat(filesep, 'average'));
+threshold=sprintf('%.2f',current_threshold);
+threshold_output_path = mkdir_if_not_exist(mode_output_path, strcat('threshold_', threshold));
+average_output_path = mkdir_if_not_exist(threshold_output_path,'average');
+
 
 %create a struct to store participant data
 all_participants = struct();
@@ -42,7 +45,7 @@ for p = 1:length(participants)
     for t = 1:length(sessions)
         session = sessions{t};
         disp(strcat("Session:", session));
-        graph_participant_output_path =  mkdir_if_not_exist(mode_output_path,strcat(participant,filesep,session));
+        graph_participant_output_path =  mkdir_if_not_exist(threshold_output_path,strcat(participant,filesep,session));
         pli_participant_input_path = strcat(pli_input_path,filesep,participant,filesep,session);
         
         result_graph = struct();
@@ -83,6 +86,20 @@ for p = 1:length(participants)
             elseif strcmp(mode, 'wpli')
                 pli_matrix  = data.name.data.avg_wpli;
                 channels_location = data.name.metadata.channels_location;
+            elseif strcmp(mode, 'aec')
+                pli_matrix = data.result.aec;
+                [hight, width, len] = size(pli_matrix);
+                temp = zeros(hight, width);
+                for i=1:hight
+                    for j=1:width
+                        for k=1:len
+                            temp(i,j) = temp(i,j) + pli_matrix(i,j,k);
+                        end
+                    end
+                end
+                temp = temp/len;
+                pli_matrix=temp;
+                channels_location = data.result.labels;
             end
             
             
@@ -90,7 +107,7 @@ for p = 1:length(participants)
             [pli_matrix,channels_location] = filter_non_scalp(pli_matrix,channels_location); %compare filtering
             
             % Binarize the network
-            t_network = threshold_matrix(pli_matrix, graph_param.threshold, mode); %the threshold is here graph_param.threshold(p,t)
+            t_network = threshold_matrix(pli_matrix, current_threshold, mode); %the threshold is here graph_param.threshold(p,t)
             b_network = binarize_matrix(t_network);
             %store bmatrix
             switch state
@@ -174,7 +191,7 @@ for p = 1:length(participants)
         save(graph_session_filename, 'result_graph');
         save(bmatrix_session_filename, 'binary_matrices');
         
-        bmatrices_participant_output_path =  mkdir_if_not_exist(graph_participant_output_path,'binary matrices plots');
+        bmatrices_participant_output_path =  mkdir_if_not_exist(graph_participant_output_path,'binary_matrices_plots');
         
         for i = 1: length(states)
             state_ = states{i}
