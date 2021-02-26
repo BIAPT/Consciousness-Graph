@@ -13,13 +13,14 @@
 %clear % to keep only what is needed for this experiment
 setup_project;
 setup_experiments % see this file to edit the experiments
-%step_2_threshold_sweep;
+step_2_threshold_sweep;
 %mode = 'aec';
 % Create the output directory
 graph_output_path = mkdir_if_not_exist(output_path,'graph theory');
 mode_output_path = mkdir_if_not_exist(graph_output_path, mode);
 pli_input_path = strcat(output_path,filesep,mode);
-threshold=sprintf('%.2f',current_threshold);
+%threshold=sprintf('%.2f',current_threshold);
+threshold = 'mcg';
 threshold_output_path = mkdir_if_not_exist(mode_output_path, strcat('threshold_', threshold));
 average_output_path = mkdir_if_not_exist(threshold_output_path,'average');
 
@@ -40,6 +41,7 @@ for p = 1:length(participants)
     % Create the participants directory
     participant = participants{p};
     disp(strcat("Participant :", participant));
+    current_threshold = graph_param.threshold(p);
     
     % Iterate over the sessions
     for t = 1:length(sessions)

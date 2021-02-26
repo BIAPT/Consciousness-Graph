@@ -9,13 +9,13 @@ clear;
 setup_project;
 setup_experiments % see this file to edit the experiments
 session = 'T1';
-mode = 'aec';
+mode = 'dpli';
 
 for p = 1: length(participants)
-    for s = 1 : length(states)
+    %for s = 1 : length(states)
         
         %Import pli data
-        pli_input_path = strcat(output_path,mode,filesep,participants{p},filesep,session,filesep,states{s} ,'_', mode, '.mat');
+        pli_input_path = strcat(output_path,mode,filesep,participants{p},filesep,session,filesep,'baseline_', mode, '.mat');
         data = load(pli_input_path);
         if strcmp(mode, 'dpli')
             pli_matrix = data.name.data.avg_dpli;
@@ -61,13 +61,13 @@ for p = 1: length(participants)
             % Here we check if there is one node that is disconnected
             if(sum(isinf(distance(:))))
                 disp(strcat("Final threshold: ", string(sweep_param.range(j-1))));
-                graph_param.threshold(p, s) = sweep_param.range(j-1);
+                graph_param.threshold(p) = sweep_param.range(j-1);
                 if strcmp(mode, 'dpli')
-                    graph_param.threshold(p, s) = sweep_param.range(j-1);
+                    graph_param.threshold(p) = sweep_param.range(j-1);
                 end
                 break;
             end
         end
-    end
+    %end
 end
 
