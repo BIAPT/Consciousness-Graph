@@ -1,1 +1,0 @@
-disp(strcat("Participant : ",participant));
