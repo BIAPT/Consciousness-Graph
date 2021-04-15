@@ -10,10 +10,11 @@ To use the code, one needs to import the wpli.py file at the beginning of their 
 ```python
 import sys
 import os
-sys.path.append(os.path.abspath("path/to/wpli.py"))
+sys.path.append(os.path.abspath("path/to/folder"))
 import wpli
 ```
 This will import the code contained in wpli.py for further usage  
+Of course, one needs to replace the path/to/folder with the absolute path to this folder (which contains wpli.py) on their machine  discord
 One also needs to have the mne python library installed. Instructions to install mne can be found at the mne [github](https://github.com/mne-tools/mne-python)
 ### Available functions and class
-
+The wpli.py file introduces the Patient class, which contains information about all the necessary information about a patient. 
