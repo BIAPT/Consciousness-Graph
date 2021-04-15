@@ -9,7 +9,7 @@
 [folder, name, ext] = fileparts(mfilename('fullpath'));
 %library_path = strcat(folder,filesep,'library');
 neuroalgo_path = '/home/raphchr/.matlab/R2020b/toolbox/NeuroAlgo';
-utils_path = strcat(folder,filesep,'utils');
+utils_path = strcat(folder,filesep,"..", fliesep, 'utils');
 %temp_path = strcat(folder,filesep,'temp.zip');
 
 %{
