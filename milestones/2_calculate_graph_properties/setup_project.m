@@ -8,7 +8,7 @@
 % Setting up the paths
 [folder, name, ext] = fileparts(mfilename('fullpath'));
 neuroalgo_path = '/home/raphchr/.matlab/R2020b/toolbox/NeuroAlgo';
-utils_path = strcat(folder,filesep,'utils');
+utils_path = strcat(folder,filesep, "..", filesep, 'utils');
 
 
 %{
