@@ -13,6 +13,7 @@ import os
 sys.path.append(os.path.abspath("path/to/wpli.py"))
 import wpli
 ```
-This will import the code contained in wpli.py for further usage
+This will import the code contained in wpli.py for further usage  
+One also needs to have the mne python library installed. Instructions to install mne can be found at the mne [github](https://github.com/mne-tools/mne-python)
 ### Available functions and class
 
