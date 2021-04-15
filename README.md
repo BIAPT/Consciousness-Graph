@@ -39,4 +39,11 @@ see the [preprint titled Brain network motifs are markers of loss and recovery o
 ## Significance
 The graph that best describe awareness is a permutation of these parameter. By doing a search in this space using a model we will be able to create this graph that may or may not be an hybrid of different graphs type. This graph can then be used in patient with a disorder of consciousness undergoing the same anesthethic pertubration protocol to characterize their awareness state. This is important because in this population the standard is to use behavioral sign of awareness to assess its presence.
 
-## Using the code
+## Usage
+### Folder architecture 
+- The "extra" folder contains:
+   - Some markdown files explaining the original aim of the project and some work done prior to the experiments, in folder "1_experiment_preparation"
+   - Some incomplete python code attempting to recreate the effect of the matlab code used for this experiment, in folder "2_python_code". Documentation for this code is provided in the same folder
+- The "steps" folder contains the code neccessary for this experiment, separated in the relevent steps and a folder for utulity functions, "utils". Documentation is also provided in this folder. 
+### Code Documentation
+Documentation for the code is provided in the "steps" folder. After cloning this repository, one needs to download the NeuroAlgo library, found [here](https://github.com/BIAPT/NeuroAlgo). One then needs to adjust the code to their needs, as described in the documentation provided in the "steps" folder. 
