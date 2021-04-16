@@ -62,7 +62,7 @@ The plot_deb_wpli function is similar to the plot_wpli function, but for debiase
 ```python
 patient.plot_deb_wpli
 ```
-The calculation of the wpli relies on the mne python library, specifically the [pectral_connectivity module](https://mne.tools/stable/auto_examples/connectivity/plot_sensor_connectivity.html#sphx-glr-auto-examples-connectivity-plot-sensor-connectivity-py)  
+The calculation of the wpli relies on the mne python library, specifically the [spectral_connectivity module](https://mne.tools/stable/auto_examples/connectivity/plot_sensor_connectivity.html#sphx-glr-auto-examples-connectivity-plot-sensor-connectivity-py)  
 ### Anticipated future aims
 Following are what I believed should be added to be more useful.  
 - Support for dPLI and AEC, AEC is already supported by [mne](https://mne.tools/stable/auto_examples/connectivity/plot_mne_inverse_envelope_correlation.html#sphx-glr-auto-examples-connectivity-plot-mne-inverse-envelope-correlation-py)
