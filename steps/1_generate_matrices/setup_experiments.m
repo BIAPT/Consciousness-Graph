@@ -40,16 +40,5 @@ dpli_param.p_value = 0.05; % the p value to make our test on
 dpli_param.step_size = 1 ;
 dpli_param.figure = 1; 
 
-% Threshold sweep Experiment Variable
-sweep_param = struct();
-sweep_param.range = 0.90:-0.01:0.01; %more connected to less connected
-
-% graph theory experiment variables
-graph_param = struct();
-graph_param.threshold = 0.41;%[0.66;0.48]
-graph_param.number_surrogate = 10;
-graph_param.figure = 1; 
-graph_param.average = 0; %TODO
-
 % The other parameters are recording dependant and will be dynamically
 % generated
