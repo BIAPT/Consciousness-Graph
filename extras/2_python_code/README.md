@@ -14,7 +14,13 @@ sys.path.append(os.path.abspath("path/to/folder"))
 import wpli
 ```
 This will import the code contained in wpli.py for further usage  
-Of course, one needs to replace the path/to/folder with the absolute path to this folder (which contains wpli.py) on their machine  discord
+Of course, one needs to replace the path/to/folder with the absolute path to this folder (which contains wpli.py) on their machine  
 One also needs to have the mne python library installed. Instructions to install mne can be found at the mne [github](https://github.com/mne-tools/mne-python)
 ### Available functions and class
 The wpli.py file introduces the Patient class, which contains information about all the necessary information about a patient. 
+It has the following attributes: 
+- name : the name/number of the patient, same as the folder that hosts the data
+- input_path : the path to the data files of the patient 
+   - should be ordered in the following way : input/path/name/session(s)/state(s)  
+   the states are .set or .edf files or some other data format  
+   there can be many sessions snd states
