@@ -116,7 +116,7 @@ class Patient:
         else :
             return None
 
-    def plot_wpli(self, windows = True):#works 
+    def plot_wpli(self):#works 
         #plot all the available wpli matrices
         for session in self.sessions:
             #iterate through sesions
@@ -235,7 +235,7 @@ class Patient:
             return True
 
 
-    def plot_deb_wpli(self, windows = True):#works 
+    def plot_deb_wpli(self):#works 
         #plot all the available wpli matrices
         for session in self.sessions:
             #iterate through sesions
