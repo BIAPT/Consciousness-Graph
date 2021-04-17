@@ -107,5 +107,5 @@ threshold = 'omst';%uncomment and change name for mcg and omst
 ```
 After all these modifications, running the step_1_generate_graph_properties.m file will compute all the graph properties for the specified mode using the orthogonally minimally spanning thresholding method.
 ### Notes
-No other notees at this time
+No other notees at this time  
 Raphaël Christin, 2021
