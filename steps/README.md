@@ -46,7 +46,7 @@ I computed all the graph properties on my own machine so there is no code to run
 ### Adjusting the code
 One needs to adjust the code depending on which type of graph and which thresholding method they wish to use. 
 #### Keeping the top xx% of the connection
-To threshold in this manner, the user needs to adjust to threshold and modes variables in the step_1c_all_thresholds.m file. Then, one needs to comment out line 22 and 23 in the step_1_gnnerate_network_properties.m file, as follows: 
+To threshold in this manner, the user needs to adjust to threshold and modes variables in the step_1c_all_thresholds.m file according to one´s need. Then, one needs to comment out line 22 and 23 in the step_1_gnnerate_network_properties.m file, as follows: 
 ```
 %step_1b_threshold_mcg;%uncomment for mcg
 %mode = 'wpli';
@@ -64,3 +64,48 @@ t_network = threshold_matrix_mode(pli_matrix, threshold, mode); %for threshold r
 ```
 After all these modifications, running the step_1c_all_trhesholds.m file will compute all the graph properties for the specified modes and threshold range
 #### Minimally connected graph
+To compute graph properties using this thresholding method, one needs to first adjust the mode variable in the step_1b_threshold_mcg to one´s need (choose between wpli, dpli and aec), as follows:
+```
+mode = 'wpli'
+```
+For the wpli mode, for example.  
+Additionally, the following adjustments should be made to the step_1_generate_network_properties:  
+- One needs to uncomment line 22 and make sure line 23 is commented out, as follows: 
+```
+step_1b_threshold_mcg;%uncomment for mcg
+%mode = 'wpli';
+```
+- One also needs to comment out line 28, and uncomment and adjust line 29 to reflect the thresholding method, as follows:
+```
+%threshold=sprintf('%.2f',current_threshold);%uncomment for threshold range
+threshold = 'mcg';%uncomment and change name for mcg and omst 
+```
+- One also needs to uncomment line 119, and comment out lines 120 and 121, as follows: 
+```
+t_network = threshold_matrix_mode(pli_matrix, graph_param.threshold(p), mode); %for mcg
+%t_network = threshold_matrix_mode(pli_matrix, threshold, mode); %for threshold range
+%[~, t_network, ~, ~, ~, ~] = threshold_omst_gce_wu(pli_matrix,0);%for omst
+```
+After all these modifications, running the step_1_generate_graph_properties.m file will compute all the graph properties for the specified mode
+#### Orthogonally minimally spanning tree
+To compute graph properties using this thresholding method, the following adjustments should be made to the step_1_generate_network_properties:  
+- One needs to uncomment line 22 and 23, and adjust line 23 to the desired mode, as follows: 
+```
+step_1b_threshold_mcg;%uncomment for mcg
+mode = 'wpli';
+```
+- One also needs to comment out line 28, and uncomment and adjust line 29 to reflect the thresholding method, as follows:
+```
+%threshold=sprintf('%.2f',current_threshold);%uncomment for threshold range
+threshold = 'omst';%uncomment and change name for mcg and omst 
+```
+- One also needs to uncomment line 121, and comment out lines 119 and 120, as follows: 
+```
+%t_network = threshold_matrix_mode(pli_matrix, graph_param.threshold(p), mode); %for mcg
+%t_network = threshold_matrix_mode(pli_matrix, threshold, mode); %for threshold range
+[~, t_network, ~, ~, ~, ~] = threshold_omst_gce_wu(pli_matrix,0);%for omst
+```
+After all these modifications, running the step_1_generate_graph_properties.m file will compute all the graph properties for the specified mode using the orthogonally minimally spanning thresholding method.
+### Notes
+No other notees at this time
+Raphaël Christin, 2021
